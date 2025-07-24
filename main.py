@@ -40,6 +40,7 @@ def main():
     with st.spinner("Processing your PDF..."):
         document_processor = Document_Processor() ## embedding and text splitter auto definied/initiated
         retriever = document_processor.process_pdf(uploaded_files)
+        document_processor.cleanup_temp_file() 
 
     rag_pipeline_manager = RAG_pipeline(llm)
     rag_chain = rag_pipeline_manager.create_rag_chain(retriever)
