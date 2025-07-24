@@ -9,6 +9,7 @@ from session_manager import SessionManager
 
 set_environment()
 
+session_manager = SessionManager()
 
 def main():
     st.title("Research Assistant based on Conversational RAG")
@@ -17,7 +18,7 @@ def main():
     api_key = st.text_input("Enter your Groq API Key: ", type = "password")
 
     if not api_key:
-        st.info("Please enter your Groq API Key. Available ")
+        st.info("Please enter your Groq API Key.")
         return
 
     #Define llm 
@@ -29,7 +30,7 @@ def main():
     uploaded_files = st.file_uploader(
         "Choose a PDF file",
         type="pdf",
-        accept_multiple_files="False"
+        accept_multiple_files=False
     )
 
     if not uploaded_files:
@@ -45,15 +46,15 @@ def main():
 
     conversational_rag = rag_pipeline_manager.create_conversational_chain(
         rag_chain,
-        SessionManager().get_session_history
+        session_manager.get_session_history
     )
 
     #User input
-    user_input = st.text_input("Please enter you question: ")
+    user_input = st.text_input("Please enter your question: ")
     
     if user_input:
         with st.spinner("Generating response..."):
-            session_history = SessionManager().get_session_history(session_id)
+            session_history = session_manager.get_session_history(session_id)
 
             response = conversational_rag.invoke(
                     {"input": user_input},
@@ -70,14 +71,14 @@ def main():
     with st.sidebar:
         st.header("Session Management")
         if st.button("Clear Current Session"):
-            SessionManager().clear_session(session_id)
+            session_manager.clear_session(session_id)
             st.success(f"Cleared session: {session_id}")
         
         if st.button("Clear All Sessions"):
-            SessionManager().clear_all_sessions()
+            session_manager.clear_all_sessions()
             st.success("Cleared all sessions")
         
-        st.write(f"Total Sessions: {len(SessionManager().get_all_sessions())}")
+        st.write(f"Total Sessions: {len(session_manager.get_all_sessions())}")
 
 
 
