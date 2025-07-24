@@ -14,7 +14,6 @@ class RAG_pipeline:
 
     
     def create_reformulation_prompt(self):
-
         reform_sys_prompt= """
             Given a chat history and a recent user question which might 
             reference context in the chat history, formulate a standalone
@@ -29,8 +28,9 @@ class RAG_pipeline:
             ("human", "{input}")
         ])
     
-    def create_answer_prompt(self):
 
+    
+    def create_answer_prompt(self):
         answer_sys_prompt = """
             You are a research assistant for question answering tasks.
             Make sure to answer the questions as accurately as possible without 

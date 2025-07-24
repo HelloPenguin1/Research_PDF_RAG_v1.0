@@ -1,0 +1,86 @@
+import streamlit as st
+from langchain_groq import ChatGroq
+
+# Import  custom modules
+from config import Config, set_environment
+from document_processor import Document_Processor
+from rag_pipeline import RAG_pipeline
+from session_manager import SessionManager
+
+set_environment()
+
+
+def main():
+    st.title("Research Assistant based on Conversational RAG")
+    st.write("Upload your Research PDFs and ask questions!")
+
+    api_key = st.text_input("Enter your Groq API Key: ", type = "password")
+
+    if not api_key:
+        st.info("Please enter your Groq API Key. Avaailable ")
+        return
+
+    #Define llm 
+    llm = ChatGroq(groq_api_key = api_key, model_name="Gemma2-9b-It")
+
+
+    session_id = st.text_input("Session ID", value="Default Session")
+
+    uploaded_files = st.file_uploader(
+        "Choose a PDF file",
+        type="pdf",
+        accept_multiple_files="False"
+    )
+
+    if not uploaded_files:
+        st.info("Please upload a PDF to start chatting")
+        return
+    
+    with st.spinner("Processing your PDF..."):
+        document_processor = Document_Processor() ## embedding and text splitter auto definied/initiated
+        retriever = document_processor.process_pdf(uploaded_files)
+
+    rag_pipeline_manager = RAG_pipeline(llm)
+    rag_chain = rag_pipeline_manager.create_rag_chain(retriever)
+
+    conversational_rag = rag_pipeline_manager.create_conversational_chain(
+        rag_chain,
+        SessionManager().get_session_history
+    )
+
+    #User input
+    user_input = st.text_input("Please enter you question: ")
+    
+    if user_input:
+        with st.spinner("Generating response..."):
+            session_history = SessionManager().get_session_history(session_id)
+
+            response = conversational_rag.invoke(
+                    {"input": user_input},
+                    config={"configurable": {"session_id": session_id}}
+            )
+
+            st.success(f"Assistant: {response['answer']}")
+
+            # show chat history
+            with st.expander("Chat History"):
+                st.write(session_history.messages)
+
+    
+    with st.sidebar:
+        st.header("Session Management")
+        if st.button("Clear Current Session"):
+            SessionManager().clear_session(session_id)
+            st.success(f"Cleared session: {session_id}")
+        
+        if st.button("Clear All Sessions"):
+            SessionManager().clear_all_sessions()
+            st.success("Cleared all sessions")
+        
+        st.write(f"Total Sessions: {len(SessionManager().get_all_sessions())}")
+
+        
+
+if __name__ == "__main__":
+    main()
+

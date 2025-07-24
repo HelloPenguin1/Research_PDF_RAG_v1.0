@@ -17,12 +17,20 @@ class SessionManager:
             st.session_state.store[session_id] = ChatMessageHistory()
         return st.session_state.store[session_id]
     
+
+
     def get_all_sessions(self):
         return st.session_state.store
-    
+
+
+
+
     def clear_session(self, session_id: str):
         if session_id in st.session_state.store:
             del st.session_state.store[session_id]
+
+
+   
     
     def clear_all_sessions(self):
         st.session_state.store = {}
