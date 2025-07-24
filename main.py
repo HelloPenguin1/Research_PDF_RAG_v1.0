@@ -17,7 +17,7 @@ def main():
     api_key = st.text_input("Enter your Groq API Key: ", type = "password")
 
     if not api_key:
-        st.info("Please enter your Groq API Key. Avaailable ")
+        st.info("Please enter your Groq API Key. Available ")
         return
 
     #Define llm 
@@ -79,7 +79,7 @@ def main():
         
         st.write(f"Total Sessions: {len(SessionManager().get_all_sessions())}")
 
-        
+
 
 if __name__ == "__main__":
     main()
