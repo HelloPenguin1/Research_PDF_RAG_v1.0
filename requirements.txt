@@ -10,3 +10,4 @@ pypdf
 langchain-huggingface
 langchain-experimental
 sentence_transformers
+faiss-cpu

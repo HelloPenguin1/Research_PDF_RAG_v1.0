@@ -1,7 +1,7 @@
 import os
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_experimental.text_splitter import SemanticChunker
-from langchain_community.vectorstores import Chroma
+from langchain_community.vectorstores import FAISS
 from config import Config, set_environment
 from langchain_community.embeddings import HuggingFaceEmbeddings
 
@@ -27,7 +27,7 @@ class Document_Processor:
         chunks = self.text_splitter.split_documents(documents)
 
         #Create vector store
-        vectorstoredb = Chroma.from_documents(chunks, self.embeddings)
+        vectorstoredb = FAISS.from_documents(chunks, self.embeddings)
 
         #Return retriever
         return vectorstoredb.as_retriever()
