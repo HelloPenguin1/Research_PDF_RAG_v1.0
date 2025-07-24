@@ -3,13 +3,15 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_experimental.text_splitter import SemanticChunker
 from langchain_community.vectorstores import Chroma
 from config import Config, set_environment
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 set_environment()
 
 class Document_Processor:
+
     def __init__(self, embeddings = None):
         self.embeddings = embeddings or Config.getembeddings()
-        self.text_splitter = SemanticChunker(Config.getembeddings())
+        self.text_splitter = SemanticChunker(self.embeddings)
 
     def process_pdf(self, uploaded_file):
         temp_path = Config.get_temp_pdf_path()

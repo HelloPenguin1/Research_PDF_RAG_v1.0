@@ -17,7 +17,7 @@ def set_environment():
 class Config:
     @staticmethod
     def getembeddings():
-        return HuggingFaceEmbeddings(model="all-MiniLM-L6-v2")
+        return HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     
     @staticmethod   
     def get_temp_pdf_path():
