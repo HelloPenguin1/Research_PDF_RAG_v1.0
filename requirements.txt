@@ -7,3 +7,4 @@ langchain-groq
 chromadb
 tiktoken
 pypdf
+langchain0-huggingface
