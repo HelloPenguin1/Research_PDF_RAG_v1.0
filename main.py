@@ -64,7 +64,7 @@ def main():
     chat_container = st.container()
 
     with chat_container:
-        session_history = session_history.get_session_history(session_id)
+        session_history = session_manager.get_session_history(session_id)
         display_messages(session_history)
 
 
