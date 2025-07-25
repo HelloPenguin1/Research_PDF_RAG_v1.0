@@ -8,8 +8,13 @@ from rag_pipeline import RAG_pipeline
 from session_manager import SessionManager
 
 set_environment()
-
 session_manager = SessionManager()
+
+st.set_page_config(
+    page_title="Research Assistant",
+    page_icon="📚",
+    layout="wide"
+)
 
 #Displaying chat history
 def display_messages(session_history):
@@ -25,15 +30,16 @@ def display_messages(session_history):
                         st.write(message.content)
 
 
+
+
 def main():
-    st.title("Research Assistant based on Conversational RAG")
-    st.write("Upload your Research PDFs and ask questions!")
+    st.title("📚 Research Assistant")
+    st.subheader("Upload your Research PDFs and ask questions!")
 
     api_key = st.secrets.get('GROQ_API_KEY')
 
     #Define llm 
     llm = ChatGroq(groq_api_key = api_key, model_name="Gemma2-9b-It")
-
 
     session_id = st.text_input("Session ID", value="Default Session")
 
@@ -59,6 +65,8 @@ def main():
         rag_chain,
         session_manager.get_session_history
     )
+
+
 
 
     chat_container = st.container()
@@ -90,17 +98,27 @@ def main():
         
     
     with st.sidebar:
-        st.header("Session Management")
-        if st.button("Clear Current Session"):
-            session_manager.clear_session(session_id)
-            st.success(f"Cleared session: {session_id}")
+        st.header("🛠️ Session Management")
         
-        if st.button("Clear All Sessions"):
+        st.write("**Quick Actions:**")
+        
+        if st.button("🗑️ Clear Current Session", type="secondary"):
+            if 'session_id' in locals():
+                session_manager.clear_session(session_id)
+                st.success("Current session cleared!")
+        
+        if st.button("🗑️ Clear All Sessions", type="secondary"):
             session_manager.clear_all_sessions()
-            st.success("Cleared all sessions")
+            st.success("All sessions cleared!")
         
-        st.write(f"Total Sessions: {len(session_manager.get_all_sessions())}")
-
+        st.divider()
+        
+        st.write("**📖 How to Use:**")
+        st.write("1. Upload a PDF document")
+        st.write("2. Type your questions below")
+        st.write("3. Get LLM-based responses!")
+        
+        st.divider()
 
 
 if __name__ == "__main__":
