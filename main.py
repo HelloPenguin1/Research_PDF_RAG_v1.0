@@ -9,7 +9,22 @@ from session_manager import SessionManager
 
 set_environment()
 
-session_manager = SessionManager()
+if "session_manager" not in st.session_state:
+    st.session_state.session_manager = SessionManager()
+
+#Displaying chat history
+def display_messages(session_history):
+
+    if hasattr(session_history, 'messages') and session_history.messages:
+        for message in session_history.messages:
+            if hasattr(message, 'type'):
+                if message.type == 'human':
+                    with st.chat_message("user"):
+                        st.write(message.content)
+                elif message.type == "ai":
+                    with st.chat_message("assistant"):
+                        st.write(message.content)
+
 
 def main():
     st.title("Research Assistant based on Conversational RAG")
@@ -50,24 +65,34 @@ def main():
         session_manager.get_session_history
     )
 
+
+    chat_container = st.container()
+
+    with chat_container:
+        session_history = session_history.get_session_history(session_id)
+        display_messages(session_history)
+
+
     #User input
     user_input = st.text_input("Please enter your question: ")
     
     if user_input:
+        with chat_container:
+            with st.chat_message("user"):
+                st.write(user_input)
+
+        
         with st.spinner("Generating response..."):
-            session_history = session_manager.get_session_history(session_id)
-
+            
             response = conversational_rag.invoke(
-                    {"input": user_input},
-                    config={"configurable": {"session_id": session_id}}
+                {"input": user_input},
+                config={"configurable": {"session_id": session_id}}
             )
-
-            st.success(f"Assistant: {response['answer']}")
-
-            # show chat history
-            with st.expander("Chat History"):
-                st.write(session_history.messages)
-
+            
+            with chat_container:
+                with st.chat_message("assistant"):
+                    st.write(response['answer'])
+        
     
     with st.sidebar:
         st.header("Session Management")
