@@ -9,8 +9,7 @@ from session_manager import SessionManager
 
 set_environment()
 
-if "session_manager" not in st.session_state:
-    st.session_state.session_manager = SessionManager()
+session_manager = SessionManager()
 
 #Displaying chat history
 def display_messages(session_history):
