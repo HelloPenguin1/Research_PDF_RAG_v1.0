@@ -29,11 +29,7 @@ def main():
     st.title("Research Assistant based on Conversational RAG")
     st.write("Upload your Research PDFs and ask questions!")
 
-    api_key = st.text_input("Enter your Groq API Key: ", type = "password")
-
-    if not api_key:
-        st.info("Please enter your Groq API Key.")
-        return
+    api_key = st.secrets.get('GROQ_API_KEY')
 
     #Define llm 
     llm = ChatGroq(groq_api_key = api_key, model_name="Gemma2-9b-It")
