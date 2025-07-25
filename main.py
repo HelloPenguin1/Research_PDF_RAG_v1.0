@@ -69,7 +69,7 @@ def main():
 
 
     #User input
-    user_input = st.chat_input("Input your query...:")
+    user_input = st.chat_input("Input your query below ...")
     
     if user_input:
         with chat_container:
